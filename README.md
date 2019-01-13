@@ -61,59 +61,6 @@
 </ion-list>
 ````
 
-````
-ionic g service services/tasks 
-ionic g interface interfaces/task
-````
-
-````
-import { HttpClientModule } from '@angular/common/http';
-
-@NgModule({
-  declarations: [AppComponent],
-  entryComponents: [],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    IonicModule.forRoot(),
-    AppRoutingModule]
-   ,
-  providers: [
-    StatusBar,
-    SplashScreen,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
-  ],
-  bootstrap: [AppComponent]
-})
-export class AppModule {}
-````
-
-
-````
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-
-import { Task } from './../interfaces/task';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class TasksService {
-
-  constructor(
-    private http: HttpClient
-  ) { }
-}
-
-
-````
-
-```
-getAllTodos() {
-  const path = `https://jsonplaceholder.typicode.com/todos`;
-  return this.http.get<Task>(path);
-}
-```
 
 
 ````
@@ -141,15 +88,15 @@ export class HomePage implements OnInit {
 
 `````
 ngOnInit() {
-    this.getAllTask();
-  }
+  this.getAllTask();
+}
 
-  getAllTask() {
-    this.tasksService.getAllTask()
-    .subscribe(tasks => {
-      this.tasks = tasks;
-    });
-  }
+getAllTask() {
+  this.taskService.getAllTasks()
+  .subscribe(tasks => {
+    this.tasks = tasks;
+  });
+}
 ````
 
 
@@ -161,3 +108,84 @@ ngOnInit() {
     </ion-item>
   </ion-list>
 ````
+
+
+````
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      Tareas
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-icon slot="icon-only" name="add"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+````
+
+````
+async openAlert() {
+    const alert = await this.alertCtrl.create({
+      header: 'Nueva tarea!',
+      inputs: [
+        {
+          name: 'title',
+          type: 'text',
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'Crear',
+          handler: () => {
+            console.log('Confirm Ok');
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+```
+
+````
+createTask(title: string) {
+    const task = {
+      userId: '1',
+      title,
+      completed: true
+    };
+    this.taskService.createTask(task)
+    .subscribe((newTask) => {
+      this.tasks.unshift(newTask);
+    });
+  }
+````
+
+````
+<ion-item-sliding *ngFor="let task of tasks; let index = i">
+  <ion-item>
+    <ion-label>{{ task.title }}</ion-label>
+    <ion-checkbox [checked]="task.completed" slot="start"></ion-checkbox>
+  </ion-item>
+  <ion-item-options side="end">
+    <ion-item-option color="danger">
+      <ion-icon name="trash"></ion-icon>
+    </ion-item-option>
+  </ion-item-options>
+</ion-item-sliding>
+````
+
+````
+deleteTask(id: string, index: number) {
+    this.taskService.deleteTask(id)
+    .subscribe(() => {
+      this.tasks.splice(index, 1);
+    });
+  }
+```

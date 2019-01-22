@@ -1,5 +1,7 @@
 {
   "name": "ionic-rest-api",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

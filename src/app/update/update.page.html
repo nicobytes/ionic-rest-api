@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Update Task</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="content">
+  <ion-item-group>
+    <ion-item>
+    <ion-label >UserID</ion-label>
+    </ion-item>
+    <ion-item>
+    <ion-input placeholder="UserID" disabled="true" value="{{ content.userId }}"></ion-input>
+  </ion-item>
+  </ion-item-group>
+
+  <ion-item-group>
+    <ion-item>
+    <ion-label color="dark">ID</ion-label>
+  </ion-item>
+    <ion-item>
+    <ion-input placeholder="ID" disabled="true" value="{{ content.id }}"></ion-input>
+  </ion-item>
+  </ion-item-group>
+
+
+  <ion-item-group>
+  <ion-item>
+    <ion-label>Titulo</ion-label>
+  </ion-item>
+  <ion-item>
+    <ion-input placeholder="Titulo" clear-on-edit="true" value="{{ content.title }}"></ion-input>
+  </ion-item>
+</ion-item-group>
+
+  <ion-item-group>
+  <ion-item>
+    <ion-label>Completed?</ion-label>
+  </ion-item>
+  </ion-item-group>
+
+  <ion-item-group>
+    <ion-item *ngIf="content.completed">
+      <ion-icon name="checkmark"></ion-icon>
+  </ion-item>
+
+  <ion-item *ngIf=!content.completed>
+    <ion-icon name="close"></ion-icon>
+    </ion-item>
+  </ion-item-group>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+  <ion-fab-button (click)="updateTask(content.id)" [routerLink]="['/']">OK</ion-fab-button>
+</ion-fab>
+
+
+</ion-content>

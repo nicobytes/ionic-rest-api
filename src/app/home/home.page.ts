@@ -13,6 +13,7 @@ import { Task } from './../interfaces/task';
 export class HomePage implements OnInit {
 
   tasks: Task[] = [];
+  task: Task;
 
   constructor(
     private tasksService: TasksService,
@@ -98,6 +99,74 @@ export class HomePage implements OnInit {
     });
     await loading.present();
     return loading;
+  }
+
+  getTask(id: string) {
+    this.tasksService.getTask(id)
+      .subscribe(async task => {
+        console.log('primer task ' + task.title); 
+        this.task = task;
+      });
+  }
+
+  updateTask(id: string, userId: string, title: string) {
+    this.task = {
+      userId,
+      id,
+      title,
+      completed: false
+    };
+    this.tasksService.updateTask(this.task)
+      .subscribe(async (updateTask) => {
+        this.tasks.splice((parseInt(id)-1), 1, updateTask);
+        console.log(this.tasks);
+      });
+  }
+
+  async editAlert(id: string) {
+    this.tasksService.getTask(id)
+      .subscribe(async task => { 
+        this.task = task;
+        const alert = await this.alertCtrl.create({
+          header: 'Editar tarea!',
+          //subHeader: 'edit', //message: 'editer',          
+          inputs: [
+            {
+              name: 'id',
+              type: 'text',
+              placeholder: 'id',
+              value: 'Task id ' + this.task.id,
+              disabled: true
+    
+            }, {
+              label: 'title',
+              name: 'title',
+              type: 'text',
+              placeholder: 'aqui texto',
+              value: this.task.title
+    
+            },
+          ],
+          buttons: [
+            {
+              text: 'Cancelar',
+              role: 'cancel',
+              cssClass: 'secondary',
+              handler: () => {
+                console.log('Confirm Cancel');
+              }
+            }, {
+              text: 'editar',
+              handler: (data) => {
+                this.updateTask(this.task.userId, this.task.id, data.title);
+                console.log(data);
+              }
+            }
+          ]
+        });
+        await alert.present();
+      });
+
   }
 
 

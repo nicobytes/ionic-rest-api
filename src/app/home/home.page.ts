@@ -22,10 +22,7 @@ export class HomePage implements OnInit {
   ) {}
 
   async ngOnInit() {
-    const loading = await this.loadingCtrl.create({
-      message: 'Cargando..',
-    });
-    await loading.present();
+    const loading = await this.presentLoading();
     this.tasksService.getAllTasks()
     .subscribe(async (tasks) => {
       console.log(tasks);
@@ -36,24 +33,24 @@ export class HomePage implements OnInit {
 
   async openAlert() {
     const alert = await this.alertCtrl.create({
-      header: 'Nueva tarea!',
+      header: 'Create New Task',
       inputs: [
         {
           name: 'title',
           type: 'text',
-          placeholder: 'aqui la tarea'
+          placeholder: 'Type a task here'
         },
       ],
       buttons: [
         {
-          text: 'Cancelar',
+          text: 'Cancel',
           role: 'cancel',
           cssClass: 'secondary',
           handler: () => {
             console.log('Confirm Cancel');
           }
         }, {
-          text: 'Crear',
+          text: 'Save',
           handler: (data) => {
             this.createTask(data.title);
           }
@@ -93,12 +90,10 @@ export class HomePage implements OnInit {
 
   async presentLoading() {
     const loading = await this.loadingCtrl.create({
-      message: 'Cargando..',
-      duration: 2000
+      message: 'Cargando..'
+      // duration: 2000 => NOT REQUIRED
     });
     await loading.present();
     return loading;
   }
-
-
 }
